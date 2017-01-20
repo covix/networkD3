@@ -121,7 +121,7 @@ HTMLWidgets.widget({
       .style("stroke", function(d) { return d.colour ; })
       //.style("stroke", options.linkColour)
       .style("opacity", options.opacity)
-      // .style("stroke-width", eval("(" + options.linkWidth + ")"))
+      .style("stroke-width", eval("(" + options.linkWidth + ")"))
       .on("mouseover", function(d) {
           d3.select(this)
             .style("opacity", 1);
@@ -129,8 +129,7 @@ HTMLWidgets.widget({
       .on("mouseout", function(d) {
           d3.select(this)
             .style("opacity", options.opacity);
-      })
-      .attr("marker-end", "url(#end)");
+      });
 
     // draw nodes
     var node = svg.selectAll(".node")
@@ -160,19 +159,58 @@ HTMLWidgets.widget({
       .style("pointer-events", "none");
 
     function tick() {
-      node.attr("transform", function(d) {
-        if(options.bounded){ // adds bounding box
-            d.x = Math.max(nodeSize(d), Math.min(width - nodeSize(d), d.x));
-            d.y = Math.max(nodeSize(d), Math.min(height - nodeSize(d), d.y));
-        }
+      // node.attr("transform", function(d) {
+      //   if(options.bounded){ // adds bounding box
+      //       d.x = Math.max(nodeSize(d), Math.min(width - nodeSize(d), d.x));
+      //       d.y = Math.max(nodeSize(d), Math.min(height - nodeSize(d), d.y));
+      //   }
         
-        return "translate(" + d.x + "," + d.y + ")"});
+      //   return "translate(" + d.x + "," + d.y + ")"});
         
-      link
-        .attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
+      // link
+      //   .attr("x1", function(d) { return d.source.x; })
+      //   .attr("y1", function(d) { return d.source.y; })
+      //   .attr("x2", function(d) { return d.target.x; })
+      //   .attr("y2", function(d) { return d.target.y; });
+      link.attr("d", function(d) {
+        var x1 = d.source.x,
+            y1 = d.source.y,
+            x2 = d.target.x,
+            y2 = d.target.y,
+            dx = x2 - x1,
+            dy = y2 - y1,
+            dr = Math.sqrt(dx * dx + dy * dy),
+
+            // Defaults for normal edge.
+            drx = dr,
+            dry = dr,
+            xRotation = 0, // degrees
+            largeArc = 0, // 1 or 0
+            sweep = 1; // 1 or 0
+
+        // Self edge.
+        if ( x1 === x2 && y1 === y2 ) {
+          // Fiddle with this angle to get loop oriented.
+          xRotation = -45;
+
+          // Needs to be 1.
+          largeArc = 1;
+
+          // Change sweep to change orientation of loop. 
+          //sweep = 0;
+
+          // Make drx and dry different to get an ellipse
+          // instead of a circle.
+          drx = 30;
+          dry = 20;
+
+          // For whatever reason the arc collapses to a point if the beginning
+          // and ending points of the arc are the same, so kludge it.
+          x2 = x2 + 1;
+          y2 = y2 + 1;
+        } 
+        return "M" + x1 + "," + y1 + "A" + drx + "," + dry + " " + xRotation + "," + largeArc + "," + sweep + " " + x2 + "," + y2;
+      }
     }
 
     function mouseover() {
