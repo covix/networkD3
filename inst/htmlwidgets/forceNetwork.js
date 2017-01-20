@@ -129,7 +129,7 @@ HTMLWidgets.widget({
       .on("mouseout", function(d) {
           d3.select(this)
             .style("opacity", options.opacity);
-      });
+      }).attr("marker-end", "url(#end)");
 
     // draw nodes
     var node = svg.selectAll(".node")
