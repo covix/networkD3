@@ -210,7 +210,7 @@ HTMLWidgets.widget({
           y2 = y2 + 1;
         } 
         return "M" + x1 + "," + y1 + "A" + drx + "," + dry + " " + xRotation + "," + largeArc + "," + sweep + " " + x2 + "," + y2;
-      }
+      })
     }
 
     function mouseover() {
