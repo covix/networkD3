@@ -121,7 +121,7 @@ HTMLWidgets.widget({
       .style("stroke", function(d) { return d.colour ; })
       //.style("stroke", options.linkColour)
       .style("opacity", options.opacity)
-      .style("stroke-width", eval("(" + options.linkWidth + ")"))
+      // .style("stroke-width", eval("(" + options.linkWidth + ")"))
       .on("mouseover", function(d) {
           d3.select(this)
             .style("opacity", 1);
